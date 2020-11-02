@@ -21,16 +21,57 @@ struct gantt
 	int pcorused[4] = {1,2,3,4};
 };
 
-void randPcess(struct Pcess pcess, struct PcorS1 ps1);
+void opt1(int x);
+int opt2(int x);
+int opt3(int x);
+int opt4(int x);
 vector<long int> rrfunc(vector<long int> gc, int n);
 
 int main()
-{	
+{
+	cout<<"Choose from the following scenarios: "<<endl;
+	cout<<"(1): Same speed and same memory same arrival time"<<endl;
+	cout<<"(2): Same speeds and varying memory"<<endl;
+	cout<<"(3): Varying speed and same memory"<<endl;
+	cout<<"(4): Same speed and same memory different arrival times"<<endl;
+	int user1;
+	cin>>user1;
+	
+	if (user1 == 1)
+	{
+		cout<<"You chose to use same speed and same memory same arrival time"<<endl;
+		opt1(user1);
+	}	
+	else if (user1 == 2)
+	{
+		cout<<"You chose to use same speed and varying memory"<<endl;
+		opt2(user1);
+	}
+	else if (user1 == 3)
+	{
+		cout<<"You chose to use varying speed and same memory"<<endl;
+		opt3(user1);
+	}
+	else if (user1 == 4)
+	{
+		cout<<"You chose to use same speed and same memory different arrival times"<<endl;
+		opt4(user1);
+	}
+	
+	return 0;
+}
+
+void opt1(int x)
+{
+	cout<<"Choose from the following scheduling algorithms: "<<endl;
+	cout<<"(1): First In First Out (FIFO)"<<endl;
+	cout<<"(2): Round Robin (RR)"<<endl;
+	int user2;
+	cin>>user2;
 	struct Pcess pcess;
-	struct PcorS1 ps1;
-	int x = 0;
-	//generates random service and memory for 40 processes
+	x = 0;
 	mt19937_64 randNum(x);
+	//generates random service and memory for 40 processes
 	for (int i = x; i < x+40; i++)
 	{
 		uniform_int_distribution<long int> randST(10000000, 10000000000000);
@@ -40,142 +81,203 @@ int main()
 		uniform_int_distribution<int> randTime(1,8);
 		int memory = randTime(randNum);
 		//cout<<memory<<" GB"<<endl;	//memory requirement
-		
+			
 		pcess.st[i] = serviceTime;
 		pcess.mem[i] = memory;
 	}
-	randPcess(pcess, ps1);
-	
-	return 0;
-}
-
-void randPcess(struct Pcess pcess, struct PcorS1 ps1)
-{
 	long int count = 0;
 	long int entry[40];
+
 	entry[0] = 0;//start of wait time
 	//start of turnaround time
 	for (int i = 1; i < 41; i++)
 	{
-		count += pcess.st[i-1];
+		count += pcess.st[i];
 		entry[i] = count;
 	}
 	entry[40] = entry[39] + pcess.st[39];
 	
-	/*//FIFO
-	cout<<"ID Number: 1"<<endl;
-		cout<<"  Service Time: "<<pcess.st[0]<<" Cycles"<<endl;
-		cout<<"  Memory Requirement: "<<pcess.mem[0]<< "GB"<<endl;
-		cout<<"  Wait Time: "<<entry[0]<<" Cycles"<<endl;
-		cout<<"  Total Time in System: "<<pcess.st[0]<<" Cycles"<<endl;
-	for (int i = 1; i < 40; i++)
+	if (user2 == 1)
 	{
-		//loop through processors
-		for (int j = i; j < i+4; j++)
+		cout<<"You chose First In First Out (FIFO)"<<endl;
+		cout<<"What seed would you like to start with(from, to): "<<endl;
+		int seed1;
+		//print out message
+		for (int i = 0; i < 40; i++)
 		{
-			cout<<"ID Number: "<<j+1<<endl;
-			cout<<"  Service Time: "<<pcess.st[j]<<" Cycles"<<endl;
-			cout<<"  Memory Requirement: "<<pcess.mem[j]<< "GB"<<endl;
-			cout<<"  Wait Time: "<<entry[j]<<" Cycles"<<endl;
-			cout<<"  Total Time in System: "<<pcess.st[j]<<" Cycles"<<endl;
+			cout<<"ID Number: "<<i+1<<endl;
+			cout<<"  Service Time: "<<pcess.st[i]<<" Cycles"<<endl;
+			cout<<"  Memory Requirement: "<<pcess.mem[i]<< "GB"<<endl;
+			cout<<"  Wait Time: "<<entry[i]<<" Cycles"<<endl;
+			cout<<"  Total Time: "<<pcess.st[i]<<" Cycles"<<endl;
 		}
-		i+=4;
+		cout<<" "<<endl;
+		cout<<"Total Turnaround Time: "<<entry[40]<<endl;
+		cout<<"Average Wait Time: "<<entry[40]/40<<endl;
 	}
-	cout<<" "<<endl;
-	cout<<"Total Turnaround Time: "<<entry[40]<<endl;
-	cout<<"Average Wait Time: "<<entry[40]/40<<endl;
-	*/
 	
-	
-	//RR
-	//Quantum in between service times, not too big or small
-	long int q = 10000000000;
-	struct gantt g;
-	//fills array with starter service time to decrement from
-	for (int i = 0; i < 40; i++)
+	else if (user2 == 2)
 	{
-		g.time.push_back(pcess.st[i]);
-	}
-	for (int i = 0; i < g.time.size(); i++) 
-	{
-		if (g.time[i] != 0)
-		{	//each processes is decremented by the quantum
-			g.time[i] = g.time[i] - q;
-			//service time is done
-			if (g.time[i] <= 0)
-			{
-				g.time[i] = 0;
+		cout<<"You chose Round Robin (RR)"<<endl;
+		cout<<"What seed would you like to start with(from, to): "<<endl;
+		int seed2;
+		//print out message
+		//RR
+		//Quantum in between service times, not too big or small
+		long int q = 1000000000000;
+		struct gantt g;
+		//fills array with starter service time to decrement from
+		for (int i = 0; i < 40; i++)
+		{
+			g.time.push_back(pcess.st[i]);
+		}
+		for (int i = 0; i < g.time.size(); i++) 
+		{
+			if (g.time[i] != 0)
+			{	//each processes is decremented by the quantum
+				g.time[i] = g.time[i] - q;
+				//service time is done
+				if (g.time[i] <= 0)
+				{
+					g.time[i] = 0;
+				}
+				g.time.push_back(g.time[i]);
 			}
-			g.time.push_back(g.time[i]);
 		}
-	}
-	vector<long int> gc;
-	//new vector created to store a copy of original vector
-	for (int i = 0; i < 40; i++) 
-	{
-		gc.push_back(g.time[i]);
-	}
-	int n = gc.size();			//start of decrements for recursion
-	vector<long int> ng = rrfunc(gc, n);
-	//printout of updated gantt chart
-	long int count2 = 0;
-	long int entry2[ng.size()];
-	entry2[0] = 0;
-	cout<<"ID Number: 1"<<endl;
-		cout<<"  Service Time: "<<pcess.st[0]<<" Cycles"<<endl;
-		cout<<"  Memory Requirement: "<<pcess.mem[0]<< "GB"<<endl;
-		cout<<"  Wait Time: "<<entry2[0]<<" Cycles"<<endl;
-		cout<<"  Total Time in System: "<<pcess.st[0]<<" Cycles"<<endl;
-	long int gcCount = 0;//handle gc
-	vector<long int> ngc;
-	long int ngcCount = 0;
-	for (int i = 0; i < gc.size(); i++)//update after used service time
-	{//saves leftover service times
-		if (gc[i] > 0)
+		vector<long int> gc;
+		//new vector created to store a copy of original vector
+		for (int i = 0; i < 40; i++) 
 		{
-			ngc.push_back(gc[i]);
+			gc.push_back(g.time[i]);
 		}
-	}
-	for (int i = 1; i < 40; i++) 
-	{ 
-		count2 += pcess.st[i-1]-ng[i-1];	
-		entry2[i] = count2;					//right of gantt before all processes
-	}
-	for (int i = 40; i < ng.size(); i++) 
-	{ 
-		count2 += ngc[ngcCount];	
-		entry2[i] = count2;					//right of gantt after all processes
-		ngcCount++;
-	}
-	entry2[ng.size()] = entry2[ng.size()-1];
-  	//loop through processors
-  	int arr = sizeof(entry2)/sizeof(entry2[0]);
-	for (int i = 1; i < 40;i++)//before update of used service time
+		int n = gc.size();			//start of decrements for recursion
+		vector<long int> ng = rrfunc(gc, n);
+		//printout of updated gantt chart
+		long int count2 = 0;
+		long int entry2[ng.size()];
+		entry2[0] = 0;
+		cout<<"ID Number: 1"<<endl;
+			cout<<"  Service Time: "<<pcess.st[0]<<" Cycles"<<endl;
+			cout<<"  Memory Requirement: "<<pcess.mem[0]<< "GB"<<endl;
+			cout<<"  Wait Time: "<<entry2[0]<<" Cycles"<<endl;
+			cout<<"  Total Time in System: "<<pcess.st[0]<<" Cycles"<<endl;
+		long int gcCount = 0;//handle gc
+		vector<long int> ngc;
+		long int ngcCount = 0;
+		for (int i = 0; i < gc.size(); i++)//update after used service time
+		{//saves leftover service times
+			if (gc[i] > 0)
+			{
+				ngc.push_back(gc[i]);
+			}
+		}
+		for (int i = 1; i < 40; i++) 
+		{ 
+			count2 += pcess.st[i-1]-ng[i-1];	
+			entry2[i] = count2;					//right of gantt before all processes
+		}
+		for (int i = 40; i < ng.size(); i++) 
+		{ 
+			count2 += ngc[ngcCount];	
+			entry2[i] = count2;					//right of gantt after all processes
+			ngcCount++;
+		}
+		entry2[ng.size()] = entry2[ng.size()-1];
+	  	//loop through processors
+	  	int arr = sizeof(entry2)/sizeof(entry2[0]);
+		for (int i = 1; i < 40;i++)//before update of used service time
+		{
+			cout<<"ID Number: "<<i+1<<endl;
+			cout<<"  Service Time: "<<pcess.st[i]<<" Cycles"<<endl;
+			cout<<"  Memory Requirements: "<<pcess.mem[i]<<"GB"<<endl;
+			cout<<"  Wait Time: "<<entry2[i]<<" Cycles"<<endl;
+			cout<<"  Total Time in System: "<<pcess.st[i]<<" Cycles"<<endl;
+		}
+		for (int i = 40; i < arr; i++)//update after used service time
+		{
+			cout<<"ID Number: "<<i+1<<endl;
+			cout<<"  Service Time: "<<ngc[gcCount]<<" Cycles"<<endl;
+			cout<<"  Memory Requirements: "<<pcess.mem[gcCount]<<"GB"<<endl;
+			cout<<"  Wait Time: "<<entry2[i]<<" Cycles"<<endl;
+			cout<<"  Total Time in System: "<<pcess.st[gcCount]<<" Cycles"<<endl;
+			gcCount++;
+		}
+		cout<<" "<<endl;
+		cout<<"Total Turnaround Time: "<<entry2[ng.size()]<<endl;
+		cout<<"Average Wait Time: "<<entry2[ng.size()]/ng.size()<<endl;
+	}	
+}
+
+int opt2(int x)
+{
+	cout<<"Choose from the following scheduling algorithms: "<<endl;
+	cout<<"(1): First In First Out (FIFO)"<<endl;
+	cout<<"(2): Round Robin (RR)"<<endl;
+	int user2;
+	cin>>user2;
+	if (user2 == 1)
 	{
-		cout<<"ID Number: "<<i+1<<endl;
-		cout<<"  Service Time: "<<pcess.st[i]<<" Cycles"<<endl;
-		cout<<"  Memory Requirements: "<<pcess.mem[i]<<"GB"<<endl;
-		cout<<"  Wait Time: "<<entry2[i]<<" Cycles"<<endl;
-		cout<<"  Total Time in System: "<<pcess.st[i]<<" Cycles"<<endl;
+		cout<<"You chose First In First Out (FIFO)"<<endl;
+		cout<<"What seed would you like to start with(from, to): "<<endl;
+		int seed1;
 	}
-	for (int i = 40; i < arr; i++)//update after used service time
+	else if (user2 == 2)
 	{
-		cout<<"ID Number: "<<i+1<<endl;
-		cout<<"  Service Time: "<<ngc[gcCount]<<" Cycles"<<endl;
-		cout<<"  Memory Requirements: "<<pcess.mem[gcCount]<<"GB"<<endl;
-		cout<<"  Wait Time: "<<entry2[i]<<" Cycles"<<endl;
-		cout<<"  Total Time in System: "<<pcess.st[gcCount]<<" Cycles"<<endl;
-		gcCount++;
+		cout<<"You chose Round Robin (RR)"<<endl;
+		cout<<"What seed would you like to start with(from, to): "<<endl;
+		int seed2;
 	}
-	cout<<" "<<endl;
-	cout<<"Total Turnaround Time: "<<entry2[ng.size()]<<endl;
-	cout<<"Average Wait Time: "<<entry2[ng.size()]/ng.size()<<endl;
+	return 0;
+}
+
+int opt3(int x)
+{
+	cout<<"Choose from the following scheduling algorithms: "<<endl;
+	cout<<"(1): First In First Out (FIFO)"<<endl;
+	cout<<"(2): Round Robin (RR)"<<endl;
+	int user2;
+	cin>>user2;
+	if (user2 == 1)
+	{
+		cout<<"You chose First In First Out (FIFO)"<<endl;
+		cout<<"What seed would you like to start with(from, to): "<<endl;
+		int seed1;
+	}
+	else if (user2 == 2)
+	{
+		cout<<"You chose Round Robin (RR)"<<endl;
+		cout<<"What seed would you like to start with(from, to): "<<endl;
+		int seed2;
+	}
+	return 0;
+}
+
+int opt4(int x)
+{
+	cout<<"Choose from the following scheduling algorithms: "<<endl;
+	cout<<"(1): First In First Out (FIFO)"<<endl;
+	cout<<"(2): Round Robin (RR)"<<endl;
+	int user2;
+	cin>>user2;
+	if (user2 == 1)
+	{
+		cout<<"You chose First In First Out (FIFO)"<<endl;
+		cout<<"What seed would you like to start with(from, to): "<<endl;
+		int seed1;
+	}
+	else if (user2 == 2)
+	{
+		cout<<"You chose Round Robin (RR)"<<endl;
+		cout<<"What seed would you like to start with(from, to): "<<endl;
+		int seed2;
+	}
+	return 0;
 }
 
 int k;
 vector<long int> rrfunc(vector<long int> gc, int n)
 {
-	long int q = 10000000000;
+	long int q = 1000000000000;
 	//copy of old service times
 	vector<long int> gcopy;
 	vector<long int> check;
@@ -214,26 +316,3 @@ vector<long int> rrfunc(vector<long int> gc, int n)
 	n = check.size();
 	return rrfunc(gc,n);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
