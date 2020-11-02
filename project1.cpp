@@ -1,5 +1,5 @@
 /*
- * Group 6: Keila Cressman, Sam F, Sam Roberts
+ * Group 6: Keila Cressman, Sam Farinacci, Sam Roberts
  * Project 1: Scheduling
  * 10/30/2020
  */
