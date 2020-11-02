@@ -15,8 +15,8 @@ struct Process {
 	long int serv;
 	int memReq;
 	int IDn;
-  long int remaining; // service time - attained time
-  unsigned long long int completedAt = 0; // which cycle processed completed on
+  	long int remaining; // service time - attained time
+  	unsigned long long int completedAt = 0; // which cycle processed completed on
 	unsigned long long int wait; // wait time
 };
 
