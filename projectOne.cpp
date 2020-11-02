@@ -32,9 +32,9 @@ void s2(Processor p[4]);
 void s3(Processor p[4]);
 
 // Process Stuff
-void generateProcesses(std::queue<Process>& plist);
-void RR(int option);
-void FIFO(int option);
+void generateProcesses(std::queue<Process>& plist, int s);
+void RR(int option, int s);
+void FIFO(int option, int s);
 
 void mainMenu();
 
@@ -74,12 +74,11 @@ void s3(Processor p[4]) {
 	}
 }
 
-void generateProcesses(std::queue<Process>& plist) {
-	int x = 0;
-	std::mt19937_64 randNum(x);
+void generateProcesses(std::queue<Process>& plist, int s) {
+	std::mt19937_64 randNum(s);
 	struct Process temp;
 
-	for (int i = x; i < x+40; i++) {
+	for (int i = s; i < s+40; i++) {
 		std::uniform_int_distribution<long int> randST(10000000, 10000000000000);
 		long int serviceTime = randST(randNum);
 
@@ -95,7 +94,7 @@ void generateProcesses(std::queue<Process>& plist) {
 	}
 }
 
-void RR(int option) {
+void RR(int option, int s) {
 	struct Processor p[4];
 	std::queue<Process> plist;
 	std::queue<Process> completed;
@@ -119,7 +118,7 @@ void RR(int option) {
 			std::cout << "You shouldn't be seeing this message. If you are, you def goofed up.\n";
 			break;
 	}
-	generateProcesses(plist);
+	generateProcesses(plist, s);
 
 	while(!flag) {
 		temp = plist.front(); // set temp to the next process in line
@@ -163,7 +162,7 @@ void RR(int option) {
 	std::cout << "Average Turnaround Time: " << (totalTurn / 40) << std::endl;
 }
 
-void FIFO(int option) {
+void FIFO(int option, int s) {
 	struct Processor p[4];
 	std::queue<Process> plist;
 	std::queue<Process> completed;
@@ -187,7 +186,7 @@ void FIFO(int option) {
 			std::cout << "You shouldn't be seeing this message either.\n";
 			break;
 	}
-	generateProcesses(plist);
+	generateProcesses(plist, s);
 
 	for(int i = 0; i < 40; i++) {
 		temp = plist.front(); // set temp to next process in line
@@ -233,6 +232,7 @@ void FIFO(int option) {
 void mainMenu() {
 	int pscenario;
 	int strategy;
+	int s;
 	bool cont = false;
 
 	std::cout << "Hello!" << std::endl;
@@ -267,12 +267,15 @@ void mainMenu() {
 			cont = true;
 		}
 	}
+	
+	std::cout << "Choose a seed for the random number generator.\n";
+	std::cin >> s;
 
 	std::cout << "Thank you! Continuing with your options...\n";
 
 	if(strategy == 1) {
-		FIFO(pscenario);
+		FIFO(pscenario, s);
 	} else {
-		RR(pscenario);
+		RR(pscenario, s);
 	}
 }
