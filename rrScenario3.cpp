@@ -1,3 +1,5 @@
+// RR for Scenario 3
+
 #include<iostream>
 #include<random>
 #include<queue>
@@ -6,8 +8,8 @@ struct Process {
 	long int serv;
 	int memReq;
 	int IDn;
-  long int remaining; // service time - attained time
-  unsigned long long int completedAt = 0; // which cycle processed completed on
+	long int remaining; // service time - attained time
+	unsigned long long int completedAt = 0; // which cycle processed completed on
 };
 
 struct Processor {
@@ -47,14 +49,14 @@ int main() {
 
 		temp.serv = serviceTime;
 		temp.memReq = memory;
-    temp.completedAt = 0;
-    temp.remaining = serviceTime;
+    		temp.completedAt = 0;
+    		temp.remaining = serviceTime;
 		temp.IDn = i;
 		plist.push(temp);
 	}
 
 	// start RR
-  while(!flag) {
+  	while(!flag) {
 		temp = plist.front(); // set temp to the next process in line
 		plist.pop(); // pop from queue
 
@@ -78,7 +80,7 @@ int main() {
 				break;
 			}
 		}
-  }
+  	}
 
 	// RESULTS
 	std::cout << completed.size() << " processes complete!\n";
